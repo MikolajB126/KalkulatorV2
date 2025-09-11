@@ -20,7 +20,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="4"
+        android:columnCount="5"
         android:rowCount="4"
         android:layout_marginTop="16dp">
 
@@ -28,21 +28,25 @@
         <Button android:text="2" style="@style/CalcButton"/>
         <Button android:text="3" style="@style/CalcButton"/>
         <Button android:text="CE" style="@style/CalcButton"/>
+        <Button android:text="*" style="@style/CalcButton"/>
 
         <Button android:text="4" style="@style/CalcButton"/>
         <Button android:text="5" style="@style/CalcButton"/>
         <Button android:text="6" style="@style/CalcButton"/>
         <Button android:text="C" style="@style/CalcButton"/>
+        <Button android:text="/" style="@style/CalcButton"/>
 
         <Button android:text="7" style="@style/CalcButton"/>
         <Button android:text="8" style="@style/CalcButton"/>
         <Button android:text="9" style="@style/CalcButton"/>
         <Button android:text="+" style="@style/CalcButton"/>
+        <Button android:text="SQRT(x)" style="@style/CalcButton"/>
 
         <Button android:text="." style="@style/CalcButton"/>
         <Button android:text="0" style="@style/CalcButton"/>
         <Button android:text="=" style="@style/CalcButton"/>
         <Button android:text="-" style="@style/CalcButton"/>
+        <Button android:text="x^2" style="@style/CalcButton"/>
 
     </GridLayout>
 </LinearLayout>

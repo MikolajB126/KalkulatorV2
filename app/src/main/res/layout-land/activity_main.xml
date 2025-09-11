@@ -47,6 +47,5 @@
         <Button android:text="=" style="@style/CalcButton"/>
         <Button android:text="-" style="@style/CalcButton"/>
         <Button android:text="x^2" style="@style/CalcButton"/>
-
     </GridLayout>
 </LinearLayout>

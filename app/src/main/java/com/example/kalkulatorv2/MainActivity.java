@@ -1,86 +1,111 @@
 package com.example.kalkulatorv2;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView displayTextView;
-
-    private String currentInput = "0";
-    private double accumulator = 0;
-    private Operation currentOperation = Operation.NONE;
-    private boolean resetInput = false;
+    TextView screen;
+    String currentInput = "";
+    double firstNumber = 0;
+    Operation currentOperation = Operation.NONE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        screen = findViewById(R.id.screen);
 
-        displayTextView = findViewById(R.id.screen);
-        displayTextView.setText(currentInput);
-    }
+        GridLayout grid = findViewById(R.id.buttonGrid);
 
-    public void CalcButton(View view) {
-        Button button = (Button) view;
-        String key = button.getText().toString();
-
-        if (isDigitOrDot(key)) {
-            if (resetInput) {
-                currentInput = "";
-                resetInput = false;
+        for (int i = 0; i < grid.getChildCount(); i++) {
+            View child = grid.getChildAt(i);
+            if (child instanceof Button) {
+                child.setOnClickListener(this::onButtonClick);
             }
-            if (currentInput.equals("0") && !key.equals(".")) {
-                currentInput = key;
-            } else {
-                currentInput += key;
-            }
-            displayTextView.setText(currentInput);
-
-        } else if (key.equals("=")) {
-            executeOperation();
-            displayTextView.setText(String.valueOf(accumulator));
-            currentInput = String.valueOf(accumulator);
-            currentOperation = Operation.NONE;
-            resetInput = true;
-
-        } else {
-            executeOperation();
-            currentOperation = Operation.operationFromKey(key);
-            resetInput = true;
         }
     }
 
-    private void executeOperation() {
-        double value = Double.parseDouble(currentInput);
-        switch (currentOperation) {
-            case NONE:
-                accumulator = value;
-                break;
-            case ADD:
-                accumulator += value;
-                break;
-            case SUBSTRACT:
-                accumulator -= value;
-                break;
-            case MULTIPLY:
-                accumulator *= value;
-                break;
-            case DIVIDE:
-                if (value != 0) {
-                    accumulator /= value;
-                } else {
-                    accumulator = 0;
+    private void onButtonClick(View v) {
+        Button btn = (Button) v;
+        String text = btn.getText().toString();
+
+        switch (text) {
+            case "C":
+                if (!currentInput.isEmpty()) {
+                    currentInput = currentInput.substring(0, currentInput.length() - 1);
+                    screen.setText(currentInput);
                 }
                 break;
+            case "CE":
+                currentInput = "";
+                firstNumber = 0;
+                currentOperation = Operation.NONE;
+                screen.setText("");
+                break;
+            case "+":
+                setOperation(Operation.ADD);
+                break;
+            case "-":
+                setOperation(Operation.SUBTRACT);
+                break;
+            case "*":
+                setOperation(Operation.MULTIPLY);
+                break;
+            case "/":
+                setOperation(Operation.DIVIDE);
+                break;
+            case "=":
+                calculate();
+                break;
+            default:
+                currentInput += text;
+                screen.setText(currentInput);
         }
     }
 
-    private boolean isDigitOrDot(String key) {
-        return key.matches("[0-9\\.]");
+    private void setOperation(Operation op) {
+        if (!currentInput.isEmpty()) {
+            if (currentOperation != Operation.NONE) {
+                calculate();
+            } else {
+                firstNumber = Double.parseDouble(currentInput);
+            }
+            currentOperation = op;
+            currentInput = "";
+        } else if (currentOperation != Operation.NONE) {
+            currentOperation = op;
+        }
+    }
+
+    private void calculate() {
+        if (currentInput.isEmpty() || currentOperation == Operation.NONE) return;
+
+        double secondNumber = Double.parseDouble(currentInput);
+        double result = 0;
+
+        switch (currentOperation) {
+            case ADD: result = firstNumber + secondNumber; break;
+            case SUBTRACT: result = firstNumber - secondNumber; break;
+            case MULTIPLY: result = firstNumber * secondNumber; break;
+            case DIVIDE:
+                if (secondNumber == 0) { screen.setText("Error"); return; }
+                result = firstNumber / secondNumber; break;
+            default: break;
+        }
+
+        if (result == (long) result) {
+            currentInput = String.valueOf((long) result);
+        } else {
+            currentInput = String.valueOf(result);
+        }
+
+        screen.setText(currentInput);
+        firstNumber = result;
+        currentOperation = Operation.NONE;
     }
 }
